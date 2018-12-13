@@ -1,0 +1,21 @@
+/* ==|====================
+   Settings / Fonts
+   ======================= */
+
+@font-face {
+  font-weight: 400;
+  font-family: "Anton";
+  font-style: normal;
+
+  src: url("../fonts/anton-v9-latin-regular.woff2") format("woff2"),
+  url("../fonts/anton-v9-latin-regular.woff") format("woff");
+}
+
+@font-face {
+  font-weight: 400;
+  font-family: "Archivo Black";
+  font-style: normal;
+
+  src: url("../fonts/archivo-black-v7-latin-regular.woff2") format("woff2"),
+  url("../fonts/archivo-black-v7-latin-regular.woff") format("woff");
+}

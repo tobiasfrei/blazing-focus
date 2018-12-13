@@ -1,0 +1,29 @@
+/* ==|===
+   Main
+   ====== */
+
+$path: ".." !default;
+$output-bourbon-deprecation-warnings: false;
+// Assets
+@import "../../../node_modules/bourbon/core/bourbon";
+@import "../../../node_modules/normalize.css/normalize";
+@import "tools/functions";
+@import "settings/settings";
+// Settings
+@import "settings/breakpoints";
+@import "settings/fonts";
+@import "settings/grid";
+// Tools
+@import "tools/placeholders";
+@import "tools/mixins";
+@import "tools/transitions";
+@import "tools/helpers";
+@import "tools/svg-sprite";
+// Base
+@import "base/base";
+// Layout
+@import "layout/pagewrapper";
+@import "layout/content";
+@import "layout/main";
+// Modules
+@import "../../modules/blazing-focus/blazing-focus";

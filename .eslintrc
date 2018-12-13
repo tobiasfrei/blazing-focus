@@ -1,0 +1,34 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb-base"
+  ],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {
+    "Modernizr": true
+  },
+  "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module"
+  },
+  "rules": {
+    "require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": false,
+        "MethodDefinition": false,
+        "ClassDeclaration": false,
+        "ArrowFunctionExpression": false,
+        "FunctionExpression": false
+      }
+    }],
+    "valid-jsdoc": "error",
+    "no-param-reassign": "off",
+    "no-debugger": "off"
+  },
+  "settings": {
+    "import/resolver": "webpack"
+  }
+}

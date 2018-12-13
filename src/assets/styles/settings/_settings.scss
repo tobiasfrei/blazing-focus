@@ -1,0 +1,65 @@
+/* ==|====================
+   Settings / General Vars
+   ======================= */
+
+//== Base
+//
+$base-font-size: 16px;
+$base-font-size-unit: 16;
+//== Font Family
+//
+$font-1: "Helvetica",
+Arial,
+sans-serif;
+$font-2: "Anton",
+Arial,
+sans-serif;
+//== Default Colors
+//
+$color1: #000000 !default;
+$color2: #ffffff !default;
+$color3: #ff2b21 !default;
+$color4: #ff6b64 !default;
+//== Layout
+//
+$max-container-width: 1420px;
+//== Gutters
+//
+$gutter-zero: 7vw;
+$gutter-micro: 6vw;
+$gutter-small: 5vw;
+$gutter-medium: 3vw;
+$gutter-large: 3.2vw;
+$gutter-wide: 2.8vw;
+$gutter-ultra: 2vw;
+$gutter-zero-half: $gutter-zero / 2;
+$gutter-micro-half: $gutter-micro / 2;
+$gutter-small-half: $gutter-small / 2;
+$gutter-medium-half: $gutter-medium / 2;
+$gutter-large-half: $gutter-large / 2;
+$gutter-wide-half: $gutter-wide / 2;
+$gutter-ultra-half: $gutter-ultra / 2;
+//== Breakpoints
+//
+$screen-micro: 375px;
+$screen-small: 540px;
+$screen-medium: 768px;
+$screen-large: 1024px;
+$screen-wide: $max-container-width;
+$screen-ultra: 1920px;
+//== Spacings
+//
+$space-micro: rem(8px);
+$space-small: rem(24px);
+$space-medium: rem(32px);
+$space-large: rem(48px);
+$space-wide: rem(96px);
+$space-ultra: rem(128px);
+//== Transitions
+//
+$transition-time-default: 340ms;
+$transition-time-fancy: 140ms;
+$basic-easing: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+$fancy-easing: cubic-bezier(0.19, 1, 0.22, 1);
+$basic-transition: $transition-time-default $basic-easing;
+$fancy-transition: $transition-time-fancy $fancy-easing;
