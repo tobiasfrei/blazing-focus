@@ -44,7 +44,7 @@ module.exports = {
   output: {
     devtoolLineToLine: true,
     sourceMapFilename: 'js/main.js.map',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'demo'),
     pathinfo: true,
     filename: 'js/main.js',
     chunkFilename: 'js/async/[name].chunk.js',
@@ -91,7 +91,9 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: [
+          /node_modules/
+        ],
         use: {
           loader: 'babel-loader',
         },
@@ -134,7 +136,7 @@ module.exports = {
             outputPath: '/fonts/',
           },
         }],
-      },
+      }
     ],
   },
   resolve: {
@@ -143,7 +145,7 @@ module.exports = {
     ],
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      vue$: 'vue/dist/vue.esm.js',
+      vue$: 'vue/demo/vue.esm.js',
     },
   },
   plugins: [
@@ -151,14 +153,20 @@ module.exports = {
     new VueLoaderPlugin(),
     new FriendlyErrorsWebpackPlugin(),
     new WebpackNotifierPlugin(),
-    new CleanWebpackPlugin(['dist'], {
+    new CleanWebpackPlugin(['demo', 'dist'], {
       root: path.resolve(__dirname),
     }),
     new CopyWebpackPlugin([{
-      from: 'src/assets/images/renditions/**/*.{png,gif,jpg,svg}',
-      to: 'images/',
-      flatten: true,
-    }], {}),
+        from: 'src/assets/images/renditions/**/*.{png,gif,jpg,svg}',
+        to: 'images/',
+        flatten: true,
+      },
+      {
+        from: 'src/modules/blazing-focus/*.js',
+        to: '../dist/',
+        flatten: true,
+      }
+    ], {}),
     new SVGSpritemapPlugin({
       src: path.resolve(__dirname, 'src/assets/images/icons/**/*.svg'),
       styles: path.resolve(__dirname, 'src/assets/styles/tools/_svg-sprite.scss'),

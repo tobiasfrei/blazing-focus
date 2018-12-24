@@ -5,3 +5,23 @@
 .body--noscroll {
   overflow: hidden;
 }
+
+.copyright {
+  position: fixed;
+  right: 1rem;
+  bottom: 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  .title {
+    font-size: 14px;
+    line-height: 1;
+    color: #ccc8cc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .contact {
+    font-size: 10px;
+    color: #ccc8cc;
+    letter-spacing: 2px;
+  }
+}

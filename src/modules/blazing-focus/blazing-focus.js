@@ -9,7 +9,8 @@ import {
   TweenMax
 } from "gsap/TweenMax";
 
-import Blazer from "./blazer";
+import Blazer from './blazer';
+import merge from 'lodash.merge';
 
 // Module Variables
 let mouse = {
@@ -20,30 +21,59 @@ let mouse = {
     x: 0,
     y: 0
   },
-  ratio = 0.15,
   active = false,
   blazingFocus,
-  blazer;
-
-// Factory createBreakpointManager
-export default (({
-  selector = '*[data-blazing]'
-} = {}) => {
-  const instance = {};
-
-  const state = {
-    selector: selector,
-    init: false
+  blazer,
+  rand = function (min, max) {
+    return Math.random() * (max - min) + min;
   };
 
+export default ((config) => {
+  const instance = {},
+    configDefault = {
+      selector: '*[data-blazing]',
+      ratio: .15,
+      blazer: {
+        particles: {
+          radius: () => {
+            return rand(1, 3) / 2;
+          },
+          alpha: () => {
+            return rand(0, 20) / 30;
+          },
+          alphaUpdate: .01,
+          alphaEnd: .05,
+          hsl: '20, 130%, 100%',
+          maxAmount: 100
+        },
+        circle: {
+          blur: 20,
+          thickness: 2,
+          hue: 10,
+          angleEnd: 40,
+          angleStart: 20,
+          rotation: 200,
+          radius: 25,
+          speed: 4
+        }
+      }
+    };
+
+  const settings = merge(configDefault, config),
+    state = {
+      init: false
+    };
+
+  // Private Functions
+  //------------------
   const updateMousePosition = (e) => {
       mouse.x = e.pageX;
       mouse.y = e.pageY;
     },
     updatePosition = () => {
       if (!active) {
-        pos.x += (mouse.x - pos.x) * ratio;
-        pos.y += (mouse.y - pos.y) * ratio;
+        pos.x += (mouse.x - pos.x) * settings.ratio;
+        pos.y += (mouse.y - pos.y) * settings.ratio;
 
         TweenLite.set(blazingFocus, {
           x: pos.x,
@@ -101,8 +131,10 @@ export default (({
       blazer.setCircle('speed', blazer.getCircle('orgSpeed') + dist * 3);
       blazer.setCircle('radius', blazer.getCircle('orgRadius') + dist * 3);
 
-      if (blazer.getCircle('orgSpeed') + dist * 3 > 20) {
-        blazer.particles();
+      if (blazer.getCircle('orgSpeed') + dist * 3 < 10) {
+        blazer.particlesOn();
+      } else {
+        blazer.particlesOff();
       }
 
       TweenMax.to(target, 0.3, {
@@ -135,8 +167,8 @@ export default (({
     return Math.sqrt(xs + ys);
   };
 
-  // **Public functions**
-
+  // Public functions
+  //-----------------
   instance.init = () => {
     console.log("init blazing");
 
@@ -153,14 +185,14 @@ export default (({
 
     TweenLite.ticker.addEventListener("tick", updatePosition);
 
-    document.querySelectorAll(state.selector).forEach((item) => {
+    document.querySelectorAll(settings.selector).forEach((item) => {
       item.addEventListener("mouseenter", mouseenter);
       item.addEventListener("mouseleave", mouseleave);
       item.addEventListener("mousemove", mousemove);
     });
 
     // init blazer
-    blazer = Blazer();
+    blazer = Blazer(settings);
     blazer.init();
 
     state.init = true;
@@ -170,7 +202,7 @@ export default (({
     return `
         <div id="blazingFocusWrapper">
           <div class="blazingFocus">
-            <canvas id="c" width="250" height="250"></canvas>
+            <canvas id="c-blazer" width="250" height="250"></canvas>
           </div>
         </div>
         `;

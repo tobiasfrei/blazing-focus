@@ -10,12 +10,12 @@ module.exports = merge(webpackConfig, {
     new BrowserSyncPlugin({
       /* proxy: 'https://cms.local', */
       server: {
-        baseDir: ['dist']
+        baseDir: ['demo']
       },
       port: 1712,
       files: ['css/*.css', 'js/*.js', '**/*.njk'],
       open: true,
-      https: true,
+      https: false,
       notify: false,
       logConnections: true,
       reloadOnRestart: true,

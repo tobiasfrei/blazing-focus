@@ -8,6 +8,12 @@ Base
   width: auto;
 }
 
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+}
+
 html {
   box-sizing: border-box;
   overflow-y: scroll;
@@ -27,7 +33,7 @@ body {
   font-size: $base-font-size;
   font-family: $font-1;
   color: $color1;
-  background-color: $color2;
+  background-color: #000a07;
 }
 
 body,
@@ -134,26 +140,6 @@ hr {
   padding: 0;
   background-color: black;
   border: 0;
-}
-
-.icon {
-  position: relative;
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
-  &,
-   > svg {
-    width: 100%; // Default icon size
-    height: 100%;
-
-    fill: none;
-    stroke: $color2;
-  }
 }
 
 input,

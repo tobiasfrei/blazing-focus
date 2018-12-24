@@ -5,61 +5,67 @@
  * @copyright tobiasfrei.ch
  */
 
+
 // Module Variables
-let c,
+let canvasEl,
   ctx,
   cw,
   ch,
   gradient1,
   gradient2,
   gradient3,
-  p = false,
   gradient4,
-  rand = function (a, b) {
-    return ~~((Math.random() * (b - a + 1)) + a);
+  flag_particle = false,
+  rand = function (min, max) {
+    return Math.random() * (max - min) + min;
   };
 
-export default (({
-  selector = '*[data-blazing]'
-} = {}) => {
-  const instance = {};
-
-  const state = {
-    selector: selector,
-    init: false
-  };
+export default ((settings) => {
+  const instance = {},
+    state = {
+      init: false
+    };
 
   let particles = [],
-    particleMax = 100,
-    circle;
+    circleState;
 
-  const dToR = (degrees) => {
+  // Private Functions
+  //------------------
+  const toDegrees = (degrees) => {
       return degrees * (Math.PI / 180);
     },
     updateCircle = () => {
-      if (circle.rotation < 360) {
-        (circle.rotation += circle.speed);
+      if (circleState.rotation < 360) {
+        (circleState.rotation += circleState.speed);
       } else {
-        circle.rotation = 0;
+        circleState.rotation = 0;
       }
     },
     renderCircle = () => {
       ctx.save();
-      ctx.translate(circle.x, circle.y);
-      ctx.rotate(dToR(circle.rotation));
+
+      // transform
+      ctx.translate(circleState.x, circleState.y);
+      ctx.rotate(toDegrees(circleState.rotation));
+
+      // draw path
       ctx.beginPath();
-      ctx.arc(0, 0, circle.radius, dToR(circle.angleStart), dToR(circle.angleEnd), true);
-      ctx.lineWidth = circle.thickness;
+      ctx.arc(0, 0, circleState.radius, toDegrees(circleState.angleStart), toDegrees(circleState.angleEnd), true);
+      ctx.lineWidth = circleState.thickness;
       ctx.strokeStyle = gradient1;
       ctx.stroke();
       ctx.restore();
     },
     renderCircleBorder = () => {
       ctx.save();
-      ctx.translate(circle.x, circle.y);
-      ctx.rotate(dToR(circle.rotation));
+
+      // transform
+      ctx.translate(circleState.x, circleState.y);
+      ctx.rotate(toDegrees(circleState.rotation));
+
+      // draw path
       ctx.beginPath();
-      ctx.arc(0, 0, circle.radius + (circle.thickness / 2), dToR(circle.angleStart), dToR(circle.angleEnd), true);
+      ctx.arc(0, 0, circleState.radius + (circleState.thickness * 2), toDegrees(circleState.angleStart), toDegrees(circleState.angleEnd), true);
       ctx.lineWidth = 6;
       ctx.strokeStyle = gradient2;
       ctx.stroke();
@@ -67,43 +73,59 @@ export default (({
     },
     renderCircleFlare = () => {
       ctx.save();
-      ctx.translate(circle.x, circle.y);
-      ctx.rotate(dToR(circle.rotation + 185));
+
+      // transform
+      ctx.translate(circleState.x, circleState.y);
+      ctx.rotate(toDegrees(circleState.rotation + 185));
       ctx.scale(1, 1);
+
+      // draw path
       ctx.beginPath();
-      ctx.arc(0, circle.radius, 40, 20, Math.PI * 2, false);
+      ctx.arc(0, circleState.radius, 40, 20, Math.PI * 2, false);
       ctx.closePath();
-      gradient3 = ctx.createRadialGradient(0, circle.radius, 0, 0, circle.radius, 10);
+
+      // create pseudo shaders
+      gradient3 = ctx.createRadialGradient(0, circleState.radius, 0, 0, circleState.radius, 10);
       gradient3.addColorStop(0, 'hsla(330, 50%, 50%, .345)');
       gradient3.addColorStop(1, 'hsla(330, 50%, 50%, 0)');
+
+      // apply pseudo shaders
       ctx.fillStyle = gradient3;
       ctx.fill();
       ctx.restore();
     },
     renderCircleFlare2 = () => {
       ctx.save();
-      ctx.translate(circle.x, circle.y);
-      ctx.rotate(dToR(circle.rotation));
+
+      // transform
+      ctx.translate(circleState.x, circleState.y);
+      ctx.rotate(toDegrees(circleState.rotation));
       ctx.scale(4, 2);
+
+      // draw path
       ctx.beginPath();
-      ctx.arc(0, circle.radius, 0, 30, Math.PI, true);
+      ctx.arc(0, circleState.radius, 0, 30, Math.PI, true);
       ctx.closePath();
-      gradient4 = ctx.createRadialGradient(20, circle.radius, 0, 300, circle.radius, 3);
+
+      // create pseudo shaders
+      gradient4 = ctx.createRadialGradient(20, circleState.radius, 0, 300, circleState.radius, 3);
       gradient4.addColorStop(0, 'hsla(30, 100%, 10%, .3)');
       gradient4.addColorStop(1, 'hsla(30, 100%, 50%, 0)');
+
+      // apply pseudo shaders
       ctx.fillStyle = gradient4;
       ctx.fill();
       ctx.restore();
     },
     createParticles = () => {
-      if (particles.length < particleMax) {
+      if (particles.length < settings.blazer.particles.maxAmount) {
         particles.push({
-          x: (circle.x + circle.radius * Math.cos(dToR(circle.rotation - 85))) + (rand(0, circle.thickness * 2) - circle.thickness),
-          y: (circle.y + circle.radius * Math.sin(dToR(circle.rotation - 85))) + (rand(0, circle.thickness * 2) - circle.thickness),
+          x: (circleState.x + circleState.radius * Math.cos(toDegrees(circleState.rotation - 85))) + (rand(0, circleState.thickness * 2) - circleState.thickness),
+          y: (circleState.y + circleState.radius * Math.sin(toDegrees(circleState.rotation - 85))) + (rand(0, circleState.thickness * 2) - circleState.thickness),
           vx: (rand(0, 100) - 50) / 20,
           vy: (rand(0, 100) - 50) / 20,
-          radius: rand(1, 3) / 3,
-          alpha: rand(0, 20) / 30
+          radius: settings.blazer.particles.radius(),
+          alpha: settings.blazer.particles.alpha()
         });
       }
     },
@@ -111,13 +133,19 @@ export default (({
       let i = particles.length;
       while (i--) {
         let p = particles[i];
+
+        // calc offset
         p.vx += (rand(0, 100) - 50) / 50;
         p.vy += (rand(0, 100) - 50) / 750;
+
+        // apply offset
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= .01;
 
-        if (p.alpha < .05) {
+        // update transparency
+        p.alpha -= settings.blazer.particles.alphaUpdate;
+
+        if (p.alpha < settings.blazer.particles.alphaEnd) {
           particles.splice(i, 1)
         }
       }
@@ -129,24 +157,52 @@ export default (({
         ctx.beginPath();
         ctx.fillRect(p.x, p.y, p.radius, p.radius);
         ctx.closePath();
-        ctx.fillStyle = 'hsla(20, 130%, 100%, ' + p.alpha + ')';
+        ctx.fillStyle = 'hsla(' + settings.blazer.particles.hsl + ', ' + p.alpha + ')';
       }
     },
-    clear = () => {
+    clearCanvas = () => {
       ctx.globalCompositeOperation = 'destination-out';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.fillRect(0, 0, cw, ch);
       ctx.globalCompositeOperation = 'lighter';
     },
-    loop = () => {
-      clear();
+    getCircleState = () => {
+      return {
+        x: (cw / 2),
+        y: (ch / 2),
+        radius: settings.blazer.circle.radius,
+        orgRadius: settings.blazer.circle.radius,
+        speed: settings.blazer.circle.speed,
+        orgSpeed: settings.blazer.circle.speed,
+        rotation: settings.blazer.circle.rotation,
+        angleStart: settings.blazer.circle.angleStart,
+        angleEnd: settings.blazer.circle.angleEnd,
+        hue: settings.blazer.circle.hue,
+        thickness: settings.blazer.circle.thickness,
+        orgThickness: settings.blazer.circle.thickness,
+        blur: settings.blazer.circle.blur
+      };
+    },
+    initCanvas = () => {
+      canvasEl = document.getElementById('c-blazer');
+
+      if (!canvasEl) {
+        console.error('#blazing-focus: no canvas found')
+      }
+
+      ctx = canvasEl.getContext('2d');
+      cw = canvasEl.width = 250;
+      ch = canvasEl.height = 250;
+    },
+    loopAnim = () => {
+      clearCanvas();
       updateCircle();
       renderCircle();
       renderCircleBorder();
       renderCircleFlare();
       renderCircleFlare2();
 
-      if (p) {
+      if (flag_particle) {
         createParticles();
         updateParticles();
         renderParticles();
@@ -154,65 +210,46 @@ export default (({
     };
 
 
-  // **Public functions**
-
+  // Public functions
+  //-----------------
   instance.init = () => {
-    c = document.getElementById('c');
+    initCanvas();
+    circleState = getCircleState();
 
-    if (!c) {
-      console.error('blazing-focus: no canvas found')
-    }
-
-    ctx = c.getContext('2d');
-    cw = c.width = 250;
-    ch = c.height = 250;
-
-    circle = {
-      x: (cw / 2),
-      y: (ch / 2),
-      radius: 25,
-      orgRadius: 25,
-      speed: 4,
-      orgSpeed: 4,
-      rotation: 200,
-      angleStart: 20,
-      angleEnd: 40,
-      hue: 10,
-      thickness: 2,
-      orgThickness: 2,
-      blur: 20
-    };
-
-    ctx.shadowBlur = circle.blur;
-    ctx.shadowColor = 'hsla(' + circle.hue + ', 80%, 60%, 0)';
+    ctx.shadowBlur = circleState.blur;
+    ctx.shadowColor = 'hsla(' + circleState.hue + ', 80%, 60%, 0)';
     ctx.lineCap = 'round'
 
-    gradient1 = ctx.createLinearGradient(0, -circle.radius, 0, circle.radius);
-    gradient1.addColorStop(0, 'hsla(' + circle.hue + ', 60%, 50%, .25)');
-    gradient1.addColorStop(1, 'hsla(' + circle.hue + ', 10%, 50%, 0)');
+    gradient1 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
+    gradient1.addColorStop(0, 'hsla(' + circleState.hue + ', 60%, 50%, .25)');
+    gradient1.addColorStop(1, 'hsla(' + circleState.hue + ', 10%, 50%, 0)');
 
-    gradient2 = ctx.createLinearGradient(0, -circle.radius, 0, circle.radius);
-    gradient2.addColorStop(0, 'hsla(' + circle.hue + ', 0%, 50%, 0)');
+    gradient2 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
+    gradient2.addColorStop(0, 'hsla(' + circleState.hue + ', 0%, 50%, 0)');
 
-    setInterval(loop, 16);
+    setInterval(loopAnim, 16);
 
     state.init = true;
-  };
-
-  instance.setCircle = (key, value) => {
-    circle[key] = value;
-  };
-
-  instance.getCircle = (key) => {
-    return circle[key];
   };
 
   instance.destroy = () => {
     instance.trigger('destroy');
   };
 
-  instance.particles = () => {
-    p = true;
+  instance.setCircle = (key, value) => {
+    circleState[key] = value;
+  };
+
+  instance.getCircle = (key) => {
+    return circleState[key];
+  };
+
+  instance.particlesOn = () => {
+    flag_particle = true;
+  };
+
+  instance.particlesOff = () => {
+    flag_particle = false;
   };
 
   return instance; // Expose instance
