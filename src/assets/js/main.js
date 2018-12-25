@@ -34,4 +34,6 @@ let bf = BlazingFocus({
   }
 });
 
-bf.init();
+let items1 = bf.register('*[data-blazing]');
+
+console.log(items1);
