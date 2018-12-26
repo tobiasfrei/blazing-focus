@@ -9,10 +9,17 @@ import '../styles/main.scss';
 // Page Defaults
 import './main.config';
 
+
+// init blazer with defaults
+// -------------------------
+
 import BlazingFocus from '../../modules/blazing-focus/blazing-focus';
 
+
+// init blazer with defaults
+// -------------------------
+
 let bf = BlazingFocus({
-  selector: '*[data-blazing]',
   ratio: .15,
   blazer: {
     particles: {
@@ -34,6 +41,33 @@ let bf = BlazingFocus({
   }
 });
 
-let items1 = bf.register('*[data-blazing]');
 
-console.log(items1);
+// register items
+// --------------
+
+let item1 = bf.register({
+  selector: '.item.heart'
+});
+
+let item2 = bf.register({
+  selector: '.item.alert',
+  ratio: .15,
+  blazer: {
+    particles: {
+      alphaUpdate: .01,
+      alphaEnd: .05,
+      hsl: '20, 130%, 100%',
+      maxAmount: 100
+    },
+    circle: {
+      blur: 10,
+      thickness: 1,
+      hue: 46,
+      angleEnd: 280,
+      angleStart: 180,
+      rotation: 20,
+      radius: 35,
+      speed: 8
+    }
+  }
+});

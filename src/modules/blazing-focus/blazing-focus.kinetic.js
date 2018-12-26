@@ -7,7 +7,7 @@
 
 import merge from 'lodash.merge';
 
-export default ((observer) => {
+export default ((id, observer) => {
   const instance = {};
 
   let settings = {},
@@ -17,6 +17,7 @@ export default ((observer) => {
   //------------------
   const bindItems = () => {
       items.forEach((item) => {
+        item.setAttribute('data-blazer', id);
         item.addEventListener("mouseenter", mouseenter);
         item.addEventListener("mouseleave", mouseleave);
         item.addEventListener("mousemove", mousemove);
@@ -24,6 +25,7 @@ export default ((observer) => {
     },
     unbindItems = () => {
       items.forEach((item) => {
+        item.removeAttribute('data-blazer', id);
         item.removeEventListener("mouseenter", mouseenter);
         item.removeEventListener("mouseleave", mouseleave);
         item.removeEventListener("mousemove", mousemove);
@@ -31,6 +33,7 @@ export default ((observer) => {
     },
     mouseenter = (e) => {
       observer.trigger('blazer-mouseEnter', {
+        id: id,
         target: e.currentTarget
       });
     },
@@ -39,6 +42,7 @@ export default ((observer) => {
         icon = e.currentTarget.querySelector(".icon");
 
       observer.trigger('blazer-mouseLeave', {
+        id: id,
         target: e.currentTarget,
         icon: icon,
         dist: dist,
@@ -51,9 +55,9 @@ export default ((observer) => {
       callParallax(e, e.currentTarget);
     },
     callParallax = (e, parent) => {
-      parallaxIt(e, parent, parent.querySelector(".icon"), 10);
+      parallaxElement(e, parent, parent.querySelector(".icon"), 10);
     },
-    parallaxIt = (e, parent, target, movement) => {
+    parallaxElement = (e, parent, target, movement) => {
       let boundingRect = parent.getBoundingClientRect(),
         relX = e.pageX - boundingRect.left,
         relY = e.pageY - boundingRect.top,
@@ -63,7 +67,8 @@ export default ((observer) => {
           y: (relY - boundingRect.height / 2) / boundingRect.height * movement
         };
 
-      observer.trigger('blazer-parallaxIt', {
+      observer.trigger('blazer-parallaxElement', {
+        id: id,
         x: pos.x,
         y: pos.y,
         target: target,
@@ -80,6 +85,7 @@ export default ((observer) => {
         };
 
       observer.trigger('blazer-parallaxCursor', {
+        id: id,
         x: pos.x,
         y: pos.y
       });
@@ -97,13 +103,8 @@ export default ((observer) => {
 
   // Public functions
   //-----------------
-  instance.init = (config) => {
-    const configDefault = {
-      selector: '*[data-blazing]'
-    };
-
-    settings = merge(configDefault, config);
-    items = document.querySelectorAll(settings.selector);
+  instance.init = (selector) => {
+    items = document.querySelectorAll(selector);
 
     bindItems();
   };

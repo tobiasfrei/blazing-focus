@@ -194,6 +194,18 @@ export default ((settings) => {
       cw = canvasEl.width = 250;
       ch = canvasEl.height = 250;
     },
+    setupColors = () => {
+      ctx.shadowBlur = circleState.blur;
+      ctx.shadowColor = 'hsla(' + circleState.hue + ', 80%, 60%, 0)';
+      ctx.lineCap = 'round'
+
+      gradient1 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
+      gradient1.addColorStop(0, 'hsla(' + circleState.hue + ', 60%, 50%, .25)');
+      gradient1.addColorStop(1, 'hsla(' + circleState.hue + ', 10%, 50%, 0)');
+
+      gradient2 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
+      gradient2.addColorStop(0, 'hsla(' + circleState.hue + ', 0%, 50%, 0)');
+    },
     loopAnim = () => {
       clearCanvas();
       updateCircle();
@@ -216,16 +228,7 @@ export default ((settings) => {
     initCanvas();
     circleState = getCircleState();
 
-    ctx.shadowBlur = circleState.blur;
-    ctx.shadowColor = 'hsla(' + circleState.hue + ', 80%, 60%, 0)';
-    ctx.lineCap = 'round'
-
-    gradient1 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
-    gradient1.addColorStop(0, 'hsla(' + circleState.hue + ', 60%, 50%, .25)');
-    gradient1.addColorStop(1, 'hsla(' + circleState.hue + ', 10%, 50%, 0)');
-
-    gradient2 = ctx.createLinearGradient(0, -circleState.radius, 0, circleState.radius);
-    gradient2.addColorStop(0, 'hsla(' + circleState.hue + ', 0%, 50%, 0)');
+    setupColors();
 
     setInterval(loopAnim, 16);
 
@@ -250,6 +253,13 @@ export default ((settings) => {
 
   instance.particlesOff = () => {
     flag_particle = false;
+  };
+
+  instance.applySettings = (pItem) => {
+    console.log(pItem.settings);
+    settings = pItem.settings;
+    circleState = getCircleState();
+    setupColors();
   };
 
   return instance; // Expose instance

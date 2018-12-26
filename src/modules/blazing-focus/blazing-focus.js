@@ -24,6 +24,7 @@ export default ((config) => {
     settings,
     observer = Observer(),
     active = false,
+    _kinetics = {},
     mouse = {
       x: 0,
       y: 0
@@ -33,84 +34,86 @@ export default ((config) => {
       y: 0
     },
     blazer,
-    blazingFocus,
-    configDefault = {
-      selector: '*[data-blazing]',
-      ratio: .15,
-      blazer: {
-        particles: {
-          radius: () => {
-            return rand(1, 3) / 2;
-          },
-          alpha: () => {
-            return rand(0, 20) / 30;
-          },
-          alphaUpdate: .01,
-          alphaEnd: .05,
-          hsl: '20, 130%, 100%',
-          maxAmount: 100
+    blazingFocus;
+
+
+  const configDefault = {
+    selector: '*[pData-blazing]',
+    ratio: .15,
+    blazer: {
+      particles: {
+        radius: () => {
+          return rand(1, 3) / 2;
         },
-        circle: {
-          blur: 20,
-          thickness: 2,
-          hue: 10,
-          angleEnd: 40,
-          angleStart: 20,
-          rotation: 200,
-          radius: 25,
-          speed: 4
-        }
+        alpha: () => {
+          return rand(0, 20) / 30;
+        },
+        alphaUpdate: .01,
+        alphaEnd: .05,
+        hsl: '20, 130%, 100%',
+        maxAmount: 100
+      },
+      circle: {
+        blur: 20,
+        thickness: 2,
+        hue: 10,
+        angleEnd: 40,
+        angleStart: 20,
+        rotation: 200,
+        radius: 25,
+        speed: 4
       }
-    };
+    }
+  };
 
   // Private
   //--------
   const listen = () => {
-      observer.on('blazer-mouseEnter', animateEnter);
       observer.on('blazer-updatePosition', updateBlazer);
       observer.on('blazer-updateMousePosition', updateMousePos);
       observer.on('blazer-parallaxCursor', animateBlazer);
-      observer.on('blazer-parallaxIt', animateIcon);
+      observer.on('blazer-parallaxElement', animateIcon);
+      observer.on('blazer-mouseEnter', animateEnter);
       observer.on('blazer-mouseLeave', animateLeave);
     },
-    updateMousePos = (data) => {
-      mouse.x = data.x;
-      mouse.y = data.y;
+    updateMousePos = (pData) => {
+      mouse.x = pData.x;
+      mouse.y = pData.y;
     },
-    updateBlazer = (data) => {
+    updateBlazer = (pData) => {
       if (!active) {
         TweenLite.set(blazingFocus, {
-          x: data.x,
-          y: data.y
+          x: pData.x,
+          y: pData.y
         });
       }
     },
-    animateBlazer = (data) => {
+    animateBlazer = (pData) => {
       TweenMax.to(blazingFocus, 0.3, {
-        x: data.x,
-        y: data.y
+        x: pData.x,
+        y: pData.y
       });
     },
-    animateIcon = (data) => {
-      blazer.setCircle('speed', blazer.getCircle('orgSpeed') + data.dist * 3);
-      blazer.setCircle('radius', blazer.getCircle('orgRadius') + data.dist * 3);
+    animateIcon = (pData) => {
+      blazer.setCircle('speed', blazer.getCircle('orgSpeed') + pData.dist * 3);
+      blazer.setCircle('radius', blazer.getCircle('orgRadius') + pData.dist * 3);
 
-      if (blazer.getCircle('orgSpeed') + data.dist * 3 < 10) {
+      if (blazer.getCircle('orgSpeed') + pData.dist * 3 < 10) {
         blazer.particlesOn();
       } else {
         blazer.particlesOff();
       }
 
-      TweenMax.to(data.target, 0.3, {
-        x: data.x,
-        y: data.y,
+      TweenMax.to(pData.target, 0.3, {
+        x: pData.x,
+        y: pData.y,
         ease: Power2.easeOut
       });
     },
-    animateLeave = (data) => {
+    animateLeave = (pData) => {
       blazingFocus.classList.remove('act');
 
-      TweenMax.to(data.target, 0.3, {
+      TweenMax.to(pData.target, 0.3, {
         scale: 1
       });
 
@@ -118,18 +121,24 @@ export default ((config) => {
         scale: 0.25
       });
 
-      TweenMax.to(data.icon, 0.8, {
-        ease: Elastic.easeOut.config(data.dist / 2, 0.3),
+      TweenMax.to(pData.icon, 0.8, {
+        ease: Elastic.easeOut.config(pData.dist / 2, 0.3),
         x: 0,
         y: 0
       });
 
       active = false;
     },
-    animateEnter = (data) => {
+    animateEnter = (pData) => {
+      console.log("new enter");
+
+      console.log(_kinetics);
+
+      blazer.applySettings(_kinetics[pData.id]);
+
       blazingFocus.classList.add('act');
 
-      TweenMax.to(data.target, 0.3, {
+      TweenMax.to(pData.target, 0.3, {
         scale: 1.6
       });
 
@@ -147,18 +156,42 @@ export default ((config) => {
           </div>
         </div>
       `;
+    },
+    getUniqueId = (pPrefix) => {
+      let d = new Date().getTime();
+      d += (parseInt(Math.random() * 100)).toString();
+      if (undefined === pPrefix) {
+        pPrefix = 'uid-';
+      }
+      d = pPrefix + d;
+      return d;
+    };
+
+  instance.register = (pSettings) => {
+    let id = getUniqueId('id-');
+
+
+
+    let newSettings = merge({}, configDefault, pSettings);
+
+
+    let blazerKinetic = BlazerKinetic(id, observer);
+
+    blazerKinetic.init(newSettings.selector);
+
+    _kinetics[id] = {
+      instance: blazerKinetic,
+      settings: { ...newSettings
+      }
     };
 
 
-  instance.register = (selector) => {
-    let blazerKinetic = BlazerKinetic(observer);
-    blazerKinetic.init(selector);
     return blazerKinetic;
   };
 
   // init base
   // ---------
-  settings = merge(configDefault, config);
+  settings = merge({}, configDefault, config);
 
   document.body.insertAdjacentHTML('beforeend', insertCanvas());
   blazingFocus = document.querySelector(".blazingFocus")
