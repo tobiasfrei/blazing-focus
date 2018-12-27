@@ -1,5 +1,5 @@
 /**
- * Blazing Focus | Mouse
+ * Blazing Focus | Position
  *
  * @author Tobias Frei
  * @copyright tobiasfrei.ch
