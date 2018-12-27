@@ -14,14 +14,14 @@ Blazing Focus provides a fancy mouse-over with kinetic effect and canvas particl
 
 1. copy files from dist/
 
-1. include scss file or rename it as css
+2. include scss file or rename it as css
 
-2. import main library
+3. import main library
 ```javascript
 import BlazingFocus from '../somewhere/blazing-focus';
 ```
 
-3. init blazing focus with default settings
+4. init blazing focus with default settings
 ```javascript
 let bf = BlazingFocus({
   blazer: {
@@ -45,7 +45,7 @@ let bf = BlazingFocus({
 });
 ```
 
-4. register items and optional overwrite defaults
+5. register items and optional overwrite defaults
 ```javascript
 let item1 = bf.register({
   selector: '.item.heart',
