@@ -8,3 +8,4 @@ ES6 or Babel
 
 ### Author
 Tobias Frei
+Based on Ketchup Starterkit

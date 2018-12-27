@@ -165,6 +165,11 @@ module.exports = {
         from: 'src/modules/blazing-focus/*.js',
         to: '../dist/',
         flatten: true,
+      },
+      {
+        from: 'src/modules/blazing-focus/*.scss',
+        to: '../dist/',
+        flatten: true,
       }
     ], {}),
     new SVGSpritemapPlugin({

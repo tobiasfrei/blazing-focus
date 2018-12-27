@@ -113,5 +113,5 @@ export default ((id, observer) => {
     unbindItems();
   };
 
-  return instance; // Expose instance
+  return instance;
 });

@@ -256,11 +256,10 @@ export default ((settings) => {
   };
 
   instance.applySettings = (pItem) => {
-    console.log(pItem.settings);
     settings = pItem.settings;
     circleState = getCircleState();
     setupColors();
   };
 
-  return instance; // Expose instance
+  return instance;
 });

@@ -23,7 +23,5 @@ $output-bourbon-deprecation-warnings: false;
 @import "base/base";
 // Layout
 @import "layout/pagewrapper";
-@import "layout/content";
-@import "layout/main";
 // Modules
 @import "../../modules/blazing-focus/blazing-focus";

@@ -1,5 +1,5 @@
 /**
- * Blazing Focus | Position
+ * Blazing Focus | Mouse
  *
  * @author Tobias Frei
  * @copyright tobiasfrei.ch
@@ -30,8 +30,12 @@ export default ((settings, observer, active, mouse, pos) => {
       }
     };
 
+  instance.applySettings = (pItem) => {
+    settings = pItem.settings;
+  };
+
   document.addEventListener("mousemove", updateMousePosition);
   TweenLite.ticker.addEventListener("tick", updatePosition);
 
-  return instance; // Expose instance
+  return instance;
 });

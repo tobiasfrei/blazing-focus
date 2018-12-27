@@ -11,7 +11,7 @@ import {
 
 import Blazer from './blazing-focus.circle';
 import BlazerKinetic from './blazing-focus.kinetic';
-import BlazerPosition from './blazing-focus.mouse';
+import BlazerMouse from './blazing-focus.mouse';
 import merge from 'lodash.merge';
 import Observer from '@unic/composite-observer';
 
@@ -34,12 +34,13 @@ export default ((config) => {
       y: 0
     },
     blazer,
-    blazingFocus;
+    blazingFocus,
+    blazerMouse;
 
 
   const configDefault = {
     selector: '*[pData-blazing]',
-    ratio: .15,
+    ratio: 0.15,
     blazer: {
       particles: {
         radius: () => {
@@ -130,11 +131,8 @@ export default ((config) => {
       active = false;
     },
     animateEnter = (pData) => {
-      console.log("new enter");
-
-      console.log(_kinetics);
-
       blazer.applySettings(_kinetics[pData.id]);
+      blazerMouse.applySettings(_kinetics[pData.id]);
 
       blazingFocus.classList.add('act');
 
@@ -170,9 +168,7 @@ export default ((config) => {
   instance.register = (pSettings) => {
     let id = getUniqueId('id-');
 
-
-
-    let newSettings = merge({}, configDefault, pSettings);
+    let newSettings = merge({}, settings, pSettings);
 
 
     let blazerKinetic = BlazerKinetic(id, observer);
@@ -201,12 +197,12 @@ export default ((config) => {
     yPercent: -50
   });
 
-  BlazerPosition(settings, observer, active, mouse, pos);
+  blazerMouse = BlazerMouse(settings, observer, active, mouse, pos);
 
   blazer = Blazer(settings);
   blazer.init();
 
   listen();
 
-  return instance; // Expose instance
+  return instance;
 });

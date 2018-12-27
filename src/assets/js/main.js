@@ -20,10 +20,9 @@ import BlazingFocus from '../../modules/blazing-focus/blazing-focus';
 // -------------------------
 
 let bf = BlazingFocus({
-  ratio: .15,
   blazer: {
     particles: {
-      alphaUpdate: .01,
+      alphaUpdate: .5,
       alphaEnd: .05,
       hsl: '20, 130%, 100%',
       maxAmount: 100
@@ -34,7 +33,7 @@ let bf = BlazingFocus({
       hue: 16,
       angleEnd: 40,
       angleStart: 20,
-      rotation: 200,
+      rotation: 20,
       radius: 25,
       speed: 4
     }
@@ -51,11 +50,10 @@ let item1 = bf.register({
 
 let item2 = bf.register({
   selector: '.item.alert',
-  ratio: .15,
   blazer: {
     particles: {
       alphaUpdate: .01,
-      alphaEnd: .05,
+      alphaEnd: .405,
       hsl: '20, 130%, 100%',
       maxAmount: 100
     },
@@ -68,6 +66,28 @@ let item2 = bf.register({
       rotation: 20,
       radius: 35,
       speed: 8
+    }
+  }
+});
+
+let item3 = bf.register({
+  selector: '.item.mail',
+  blazer: {
+    particles: {
+      alphaUpdate: .002,
+      alphaEnd: .05,
+      hsl: '80, 30%, 80%',
+      maxAmount: 30
+    },
+    circle: {
+      blur: 104,
+      thickness: 2,
+      hue: 24,
+      angleEnd: 210,
+      angleStart: -90,
+      rotation: 80,
+      radius: 28,
+      speed: 6
     }
   }
 });
