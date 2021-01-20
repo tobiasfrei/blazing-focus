@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "@unic/composite-observer": "0.0.10",
-    "gsap": "^2.0.2",
+    "gsap": "^3.6.0",
     "mdn-polyfills": "^5.9.0",
     "modernizr": "^3.6.0",
     "normalize.css": "^8.0.0"
