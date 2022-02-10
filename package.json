@@ -50,7 +50,7 @@
     "lint-staged": "7.3.0",
     "lodash.merge": "^4.6.1",
     "mini-css-extract-plugin": "^0.4.1",
-    "node-sass": "^4.9.2",
+    "node-sass": "^7.0.0",
     "nunjucks-html-loader": "^1.1.0",
     "nunjucks-loader": "^3.0.0",
     "postcss-loader": "^3.0.0",
